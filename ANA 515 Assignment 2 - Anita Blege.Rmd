@@ -1,0 +1,141 @@
+---
+title: "ANA 515 Assignment 2"
+author: "Anita Blege"
+date: "2022-09-17"
+output:
+  word_document: default
+  html_document:
+    theme:
+      bootswatch: minty
+---
+
+
+The raw survey file is comma delimited and about 2.16mb in size. This is a one-time data set collated through a survey which was administered by two FiveThirtyEight reporters using Survey Monkey. The data contains the responses of 1,615 survey respondents on characteristics of masculinity and what they think it means to be a man. The purpose of this survey was to attempt to measure how men view existing gender norms,patriarchal social systems, gender disparities, and general roles of masculinity in the society.
+
+
+```{r setup, include = FALSE}
+library(ggplot2)
+library(dplyr)
+library(bslib)
+library(tidyverse)
+library(knitr)
+
+```
+
+
+#Use read.csv from the utils package (which is installed by default) to read in the data and assign it to a dataframe object to be used later.
+
+```{r, include = TRUE}
+masculinity_survey <- read.csv('https://github.com/fivethirtyeight/data/blob/master/masculinity-survey/raw-responses.csv?raw=true')
+```
+
+
+
+#rename some columns using dplyr to make the df more readable
+
+```{r, echo = TRUE}
+masculinity_survey<- masculinity_survey%>% 
+rename (how_masculine_do_you_feel = q0001, importance_of_being_seen_As_masculine = q0002, unhealthy_societal_pressure = q0005, employment_status = q0009,marital_status = q0024, sexual_orientation = q0026, race = q0028, education_level = q0029)
+```
+
+
+We have data about `r nrow(masculinity_survey)` survey responses and `r ncol(masculinity_survey)` columns.
+
+
+
+#select certain columns and view their first 5 outputs
+```{r, include = TRUE}
+masculinity_survey<- masculinity_survey%>%
+  
+select (how_masculine_do_you_feel, importance_of_being_seen_As_masculine, unhealthy_societal_pressure, employment_status, marital_status, sexual_orientation, race, education_level)
+```
+
+
+```{r, include = TRUE}
+
+m1<- masculinity_survey%>% count(how_masculine_do_you_feel, sort = TRUE)
+
+m2<- masculinity_survey%>% count(importance_of_being_seen_As_masculine, sort = TRUE)
+
+m3<- masculinity_survey%>%count(unhealthy_societal_pressure, sort = TRUE)
+
+m4<- masculinity_survey%>%count(employment_status, sort = TRUE)
+
+m5<- masculinity_survey%>%count(marital_status, sort = TRUE)
+
+m6<- masculinity_survey%>%count(sexual_orientation, sort = TRUE)
+
+m7<- masculinity_survey%>%count(race, sort = TRUE)
+
+m8<- masculinity_survey%>%count(education_level, sort = TRUE)
+```
+
+
+```{r, echo = TRUE}
+
+kable(m1, caption = "In General How Masculine or Manly Do You Feel")
+
+kable(m2, caption = "Do You Think That Society Puts Pressure On Men  A Way That Is Bad Or Unhealthy For Them?")
+
+
+kable(m3, caption = "“How Important Is It To You That Others See You As Manly")
+
+kable(m4, caption = "Which Of These Categories Best Describes Your Employment Status")
+
+kable(m5, caption = "What Is Your Marital Status")
+
+
+kable(m6, caption = "What Is Your Sexual Orientation")
+
+kable(m7, caption = "What Is Your Race") 
+
+
+kable(m8, caption = "What Is The Last Grade Of School You Completed")
+
+```
+
+
+Below are charts of the dataset for certain variables of interest: 
+
+
+
+Masculinity 
+
+
+```{r, echo=TRUE}
+masculinity_survey %>%
+ggplot(aes(fct_infreq(how_masculine_do_you_feel)%>%fct_rev())) + geom_bar() + coord_flip() + labs(x="Masculinity")
+```
+
+Employment Status 
+
+
+```{r, echo=TRUE}
+masculinity_survey %>%
+ggplot(aes(fct_infreq(employment_status)%>%fct_rev())) + geom_bar() + coord_flip() + labs(x="Employment Status")
+```
+
+Education Level
+
+```{r, echo=TRUE}
+masculinity_survey %>%
+ggplot(aes(fct_infreq(employment_status)%>%fct_rev())) + geom_bar() + coord_flip() + labs(x="Education Level")
+```
+
+
+```{r, include = TRUE}
+masculinity_survey_sub<- select (masculinity_survey, how_masculine_do_you_feel, unhealthy_societal_pressure, employment_status, marital_status, sexual_orientation, race, education_level)
+```
+
+
+```{r, include = TRUE}
+Summarytable<-data.frame(masculinity_survey)
+sum_table <- summary(Summarytable)
+#creates the summary
+sum_table #prints the summary in your output
+#summary(masculinity_survey_sub, title = "SUmmary")
+
+#kable(sum_table, caption = "Summarized Value of Sub DataSet")
+```
+
+
